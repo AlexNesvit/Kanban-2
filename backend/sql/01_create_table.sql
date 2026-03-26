@@ -1,0 +1,14 @@
+CREATE TABLE colonne (
+id BIGINT PRIMARY KEY,
+intitule VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE tache (
+id BIGINT PRIMARY KEY,
+nom VARCHAR(255) NOT NULL,
+couleur VARCHAR(6) NOT NULL,
+colonne_id BIGINT,
+CONSTRAINT fk_colonne
+FOREIGN KEY (colonne_id)
+REFERENCES colonne(id)
+);
