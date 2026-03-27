@@ -10,10 +10,10 @@ router.get("/api/taches", (_req, res) => {
 
 router.post("/api/taches", (req, res) => {
   const { nom, couleur } = req.body;
-  const colonne = tacheRepository.findColonneByName("A faire");
+  const colonne = tacheRepository.findColonneByName("A Faire");
 
   if (!colonne) {
-    return res.status(400).json({ error: "Colonne A faire introuvable" });
+    return res.status(400).json({ error: "Colonne A Faire introuvable" });
   }
 
   const newTache = {

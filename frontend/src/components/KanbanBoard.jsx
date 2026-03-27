@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-const DEFAULT_COLUMNS = ["A faire", "En cours", "A controler", "Termine"];
+const DEFAULT_COLUMNS = ["A Faire", "En cours", "A controler", "Termine"];
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export default function KanbanBoard() {

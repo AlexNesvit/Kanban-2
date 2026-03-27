@@ -1,5 +1,5 @@
 const colonnes = [
-  { id: 1, intitule: "A faire" },
+  { id: 1, intitule: "A Faire" },
   { id: 2, intitule: "En cours" },
   { id: 3, intitule: "A controler" },
   { id: 4, intitule: "Termine" },

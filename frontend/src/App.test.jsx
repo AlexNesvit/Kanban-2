@@ -16,7 +16,7 @@ describe("Page /", () => {
           id: 1,
           nom: "Preparer les materiaux",
           couleur: "FF0000",
-          colonne: { id: 1, intitule: "A faire" },
+          colonne: { id: 1, intitule: "A Faire" },
         },
         {
           id: 2,
@@ -29,7 +29,7 @@ describe("Page /", () => {
 
     render(<App />);
 
-    expect(await screen.findByText("A faire")).toBeTruthy();
+    expect(await screen.findByText("A Faire")).toBeTruthy();
     expect(await screen.findByText("En cours")).toBeTruthy();
     expect(await screen.findByText("Preparer les materiaux")).toBeTruthy();
     expect(await screen.findByText("Assembler les pieces")).toBeTruthy();
