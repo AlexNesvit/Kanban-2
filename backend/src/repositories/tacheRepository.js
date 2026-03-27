@@ -1,18 +1,18 @@
-const taches = [];
+const { taches, colonnes } = require("../data/store");
 
 const tacheRepository = {
-findAll() {
-return taches;
-},
+  findAll() {
+    return taches;
+  },
 
-findById(id) {
-return taches.find(tache => tache.id === id);
-},
+  save(tache) {
+    taches.push(tache);
+    return tache;
+  },
 
-save(tache) {
-taches.push(tache);
-return tache;
-}
+  findColonneByName(nom) {
+    return colonnes.find((colonne) => colonne.intitule === nom);
+  },
 };
 
 module.exports = tacheRepository;

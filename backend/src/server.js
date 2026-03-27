@@ -1,16 +1,15 @@
-import express from 'express';
-import cors from 'cors';
+const express = require("express");
+const cors = require("cors");
+const tacheRoutes = require("./routes/tacheRoutes");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(tacheRoutes);
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'UP' });
+app.get("/health", (_req, res) => {
+  res.json({ status: "UP" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend listening on http://localhost:${PORT}`);
-});
+module.exports = app;
