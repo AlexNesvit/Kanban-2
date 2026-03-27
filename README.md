@@ -1,131 +1,207 @@
-# FT Alex — Étude de cas KANBAN (réponses)
+# FT Alex - Etude de cas KANBAN (Reponses 1 a 9)
 
-## Exercice 1 — Hypothèse MVP
+## Contexte
+Ce projet implemente un mini Kanban fullstack:
+- `backend` en Node.js + Express
+- `frontend` en React + Vite
+- tests backend (Node test + Supertest)
+- tests frontend (Vitest + Testing Library)
 
-### Hypothèse de départ
-Si l’atelier visualise ses ordres de fabrication sur un tableau Kanban numérique unique (colonnes + cartes), alors les chefs d’équipe pourront prioriser plus vite, réduire les encours inutiles et limiter les retards de livraison.
+## Exercice 1 - Hypothese MVP
+### Hypothese
+Si l'atelier visualise ses ordres de fabrication sur un tableau Kanban unique (colonnes + cartes), alors les equipes priorisent plus vite et reduisent les retards.
 
 ### Cible
-- Responsable de production
-- Chef d’équipe atelier
-- Opérateur de suivi de fabrication
-
-### Problème utilisateur à résoudre
-Aujourd’hui, l’entreprise manque de visibilité en temps réel sur l’état des tâches et les priorités changent souvent. Cela crée des retards, des erreurs de planification et une surcharge de travail en cours.
+- Responsable production
+- Chef d'equipe atelier
+- Operateur suivi de fabrication
 
 ### Proposition de valeur
-Une application web simple, visuelle et partagée qui montre instantanément :
-- où se trouve chaque tâche,
-- quelles tâches sont prioritaires,
-- quelles étapes sont bloquantes.
+Une interface visuelle simple qui montre instantanement:
+- l'etat des taches
+- la priorite
+- les blocages par colonne
 
-### Fonctionnalités **incluses** dans le MVP
-1. Affichage d’un tableau Kanban avec 4 colonnes (À faire, En cours, À contrôler, Terminé).
-2. Affichage des tâches avec leur nom et couleur.
-3. API backend pour lire la liste des tâches (`GET /api/taches`).
-4. Initialisation projet en architecture fullstack séparée : frontend React + backend Node.js REST.
-5. Point de santé backend (`GET /health`) pour vérifier le démarrage.
+### Inclus dans le MVP
+1. Tableau Kanban 4 colonnes
+2. Affichage des taches (nom + couleur)
+3. API lecture des taches
+4. API ajout de tache
+5. Tests backend/frontend
 
-### Fonctionnalités **exclues** du MVP
-1. Authentification/gestion des rôles.
-2. Drag-and-drop temps réel.
-3. Notifications (email, SMS, Teams, etc.).
-4. Historique détaillé/audit des changements.
-5. Reporting avancé (KPI, lead time, throughput).
-6. Gestion multi-sites / multi-ateliers.
+### Exclu du MVP
+1. Authentification
+2. Drag and drop avance
+3. Notifications
+4. Reporting KPI
+5. Historique complet
 
-### Wireframe (basse fidélité)
+## Exercice 2 - Initialisation du projet Node.js / React
+### Ce qui a ete cree
+1. Projet fullstack avec dossiers separes `backend` et `frontend`
+2. Frontend React (Vite)
+3. Backend Express
+4. Scripts npm de demarrage et de test
 
+### Structure finale
 ```text
-+--------------------------------------------------------------------------------+
-| KANBAN JAYDEE                                                      [Filtre]    |
-+--------------------------------------------------------------------------------+
-|  À FAIRE           |  EN COURS         |  À CONTRÔLER       |  TERMINÉ       |
-|--------------------|--------------------|--------------------|----------------|
-| [Carte #1 Rouge]   | [Carte #3 Bleu]    | [Carte #4 Orange]  | [Carte #5 Vert]|
-| Nom: Préparer moule| Nom: Injection lot | Nom: Contrôle visuel| Nom: Expédié  |
-|--------------------|--------------------|--------------------|----------------|
-| [Carte #2 Violet]  |                    |                    |                |
-| Nom: Matière ABS   |                    |                    |                |
-+--------------------------------------------------------------------------------+
-| [Ajouter une tâche]                                                         |
-+--------------------------------------------------------------------------------+
-```
-
----
-
-## Exercice 2 — Initialiser le projet Node.js / React
-
-### Commande utilisée pour créer le projet React (Vite)
-```bash
-npm create vite@latest frontend -- --template react
-```
-
-> Remarque: dans cet environnement, la récupération npm a été bloquée (`403 Forbidden`), donc la structure a été initialisée manuellement avec la même organisation attendue Vite + React.
-
-### Arborescence finale
-
-```text
-Kanban-2/
+Kanban 2/
 ├── README.md
-├── FT_KANBAN_Reponses.md
 ├── backend/
+│   ├── index.js
 │   ├── package.json
-│   └── src/
-│       └── server.js
+│   ├── sql/
+│   │   ├── 01_create_table.sql
+│   │   └── 02_insert_colonne_tache.sql
+│   ├── src/
+│   │   ├── data/store.js
+│   │   ├── models/
+│   │   │   ├── Colonne.js
+│   │   │   └── Tache.js
+│   │   ├── repositories/
+│   │   │   ├── colonneRepository.js
+│   │   │   └── tacheRepository.js
+│   │   ├── routes/tacheRoutes.js
+│   │   └── server.js
+│   └── tests/tache.test.js
 └── frontend/
     ├── package.json
-    ├── index.html
     ├── vite.config.js
     └── src/
-        └── main.jsx
+        ├── App.jsx
+        ├── App.test.jsx
+        ├── main.jsx
+        └── components/KanbanBoard.jsx
 ```
 
-### `package.json` backend
+## Exercice 3 - Modeles metier
+### Ce qui a ete cree
+1. Modele `Colonne` avec `id` et `intitule`
+2. Modele `Tache` avec `id`, `nom`, `couleur`, `colonne`
+3. Validation metier dans `Tache`:
+- `nom` obligatoire
+- `couleur` format hex RGB sans `#`
 
-```json
-{
-  "name": "kanban-backend",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "main": "src/server.js",
-  "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "test": "node --test"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2"
-  }
-}
+### Fichiers
+- `backend/src/models/Colonne.js`
+- `backend/src/models/Tache.js`
+
+## Exercice 4 - Script SQL de creation
+### Ce qui a ete cree
+1. Table `colonne`
+2. Table `tache`
+3. Cle etrangere `tache.colonne_id -> colonne.id`
+
+### Fichier
+- `backend/sql/01_create_table.sql`
+
+## Exercice 5 - Script SQL d'initialisation des donnees
+### Ce qui a ete cree
+1. Insertion des colonnes Kanban
+2. Insertion de taches de demonstration
+
+### Fichier
+- `backend/sql/02_insert_colonne_tache.sql`
+
+## Exercice 6 - Repository pattern
+### Ce qui a ete cree
+1. `colonneRepository` (findAll, findById, save)
+2. `tacheRepository` (findAll, save, findColonneByName)
+3. Source de donnees centralisee en memoire: `src/data/store.js`
+
+### Fichiers
+- `backend/src/repositories/colonneRepository.js`
+- `backend/src/repositories/tacheRepository.js`
+- `backend/src/data/store.js`
+
+## Exercice 7 - Mise en place du serveur backend
+### Ce qui a ete cree
+1. Application Express avec `cors` et `express.json()`
+2. Route de sante `GET /health`
+3. Separation `app` / `listen`:
+- `src/server.js` exporte l'app
+- `index.js` lance le serveur
+
+### Fichiers
+- `backend/src/server.js`
+- `backend/index.js`
+
+## Exercice 8 - Page d'accueil + GET /api/taches + tests
+### Backend
+Route `GET /api/taches` qui retourne la liste JSON des taches avec leur colonne.
+
+### Frontend
+La route `/` affiche le tableau Kanban:
+1. Chargement des donnees via `fetch("http://localhost:3000/api/taches")`
+2. Affichage des 4 colonnes
+3. Affichage des cartes de taches dans la bonne colonne
+
+### Tests
+1. Test backend: verification de `GET /api/taches` (status 200 + tableau JSON)
+2. Test frontend: verification affichage colonnes/taches apres chargement
+
+### Fichiers
+- `backend/src/routes/tacheRoutes.js`
+- `backend/tests/tache.test.js`
+- `frontend/src/components/KanbanBoard.jsx`
+- `frontend/src/App.jsx`
+- `frontend/src/main.jsx`
+- `frontend/src/App.test.jsx`
+
+## Exercice 9 - POST /api/taches + tests
+### Regle metier demandee
+1. Creation de tache via `POST /api/taches`
+2. Affectation automatique a la colonne `A Faire`
+3. Si `A Faire` absente: retour `400`
+4. Retour JSON de la tache creee
+
+### Ce qui a ete implemente
+1. Route `POST /api/taches` dans `tacheRoutes`
+2. Recherche de colonne via `findColonneByName("A Faire")`
+3. Erreur `400` + message explicite si colonne absente
+4. Test de succes `201`
+5. Test d'erreur `400` si la colonne `A Faire` est retiree
+
+### Fichiers
+- `backend/src/routes/tacheRoutes.js`
+- `backend/src/repositories/tacheRepository.js`
+- `backend/src/data/store.js`
+- `backend/tests/tache.test.js`
+
+## Lancement du projet
+### Backend
+```bash
+cd backend
+npm install
+npm run dev
 ```
 
-### `package.json` frontend
-
-```json
-{
-  "name": "kanban-frontend",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest"
-  },
-  "dependencies": {
-    "bootstrap": "^5.3.3",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.0",
-    "vitest": "^2.0.5"
-  }
-}
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
 ```
+
+## Lancement des tests
+### Backend
+```bash
+cd backend
+npm test
+```
+
+### Frontend
+```bash
+cd frontend
+npm test -- --run
+```
+
+## Resultat actuel
+- Backend: tests OK (GET + POST succes + POST erreur 400)
+- Frontend: test page `/` OK (chargement et rendu Kanban)
+
+## Captures ecran conseillees pour la remise
+1. Terminal backend avec `npm test` (tests passes)
+2. Terminal frontend avec `npm test -- --run` (test passe)
+3. Navigateur sur `http://localhost:5173` montrant le tableau Kanban
+4. Capture code de `POST /api/taches` et du test associe
